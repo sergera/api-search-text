@@ -10,7 +10,8 @@ from app.repository.exceptions import (CouldNotCreateIndexException,
                                        CouldNotGetDocumentException,
                                        CouldNotSearchDocumentsException,
                                        CouldNotInsertDocumentException,
-                                       ExistingDocumentException,)
+                                       ExistingDocumentException,
+                                       DocumentNotFoundException,)
 
 import os
 DB_NAME = os.environ.get("DB_NAME")
@@ -101,6 +102,14 @@ class RepositoryTestCase(unittest.TestCase):
         self.mocked_db.__getitem__.assert_called_once_with(TEST_COLLECTION_NAME)
         self.mocked_collection.find_one.assert_called_once_with(key, {"_id": False})
 
+    def test_get_doc_not_found(self):
+        key = {"key": "a123", "title": "it's a title", "body": "it's a body"}
+
+        self.mocked_collection.find_one.return_value = None
+
+        with self.assertRaises(DocumentNotFoundException): 
+            self.mongo.get_doc(TEST_COLLECTION_NAME, key)
+
     def test_search_text_success(self):
         mocked_return_value = [ 
                 {"key": "a123", "title": "it's a title", "body": "it's a body"},
@@ -135,6 +144,14 @@ class RepositoryTestCase(unittest.TestCase):
         with self.assertRaises(CouldNotSearchDocumentsException):
             return_value = self.mongo.search_text(TEST_COLLECTION_NAME, search_string)
 
+    def test_search_text_not_found(self):
+        self.mocked_collection.find.return_value = []
+
+        search_string = "it's a string to be searched"
+
+        with self.assertRaises(DocumentNotFoundException):
+            return_value = self.mongo.search_text(TEST_COLLECTION_NAME, search_string)
+
     def test_insert_one_document_success(self):
         document = {"key": "a123", "title": "it's a title", "body": "it's a body"}
         returned_message = {"message": "Document Inserted!"}
@@ -152,9 +169,6 @@ class RepositoryTestCase(unittest.TestCase):
 
         with self.assertRaises(CouldNotInsertDocumentException):
             self.mongo.insert_one(TEST_COLLECTION_NAME, document)
-
-        self.mocked_db.__getitem__.assert_called_once_with(TEST_COLLECTION_NAME)
-        self.mocked_collection.insert_one.assert_called_once_with(document)
 
     def test_insert_one_unique_fields(self):
         document = {"key": "a123", "title": "it's a title", "body": "it's a body"}

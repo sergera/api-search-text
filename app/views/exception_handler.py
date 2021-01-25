@@ -5,7 +5,8 @@ from app.repository.exceptions import (CouldNotCreateIndexException,
 									   CouldNotGetDocumentException,
 									   CouldNotSearchDocumentsException,
 									   CouldNotInsertDocumentException,
-									   ExistingDocumentException,)
+									   ExistingDocumentException,
+									   DocumentNotFoundException,)
 
 app_error_handler = Blueprint("app_error_handler", __name__)
 
@@ -32,6 +33,10 @@ def handle_error_insert_document(ex):
 @app_error_handler.app_errorhandler(ExistingDocumentException)
 def handle_error_existing_document(ex):
 	return jsonify({"message": str(ex)}), 409
+
+@app_error_handler.app_errorhandler(DocumentNotFoundException)
+def handle_error_document_not_found(ex):
+	return jsonify({"message": str(ex)}), 404
 
 @app_error_handler.app_errorhandler(Exception)
 def handle_error_generic(ex):

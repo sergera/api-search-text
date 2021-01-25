@@ -5,7 +5,8 @@ from .exceptions import (CouldNotCreateIndexException,
                          CouldNotGetDocumentException,
                          CouldNotSearchDocumentsException,
                          CouldNotInsertDocumentException,
-                         ExistingDocumentException,)
+                         ExistingDocumentException,
+                         DocumentNotFoundException,)
 
 INDEX_TYPES = {
     "TEXT": pymongo.TEXT,
@@ -92,10 +93,13 @@ class MongoRepository():
         """
         try:
             document = self._db[collection_name].find_one(key, {'_id': False})
-            return document
-
         except:
             raise CouldNotGetDocumentException("Could not get document!")
+        
+        if not document:
+            raise DocumentNotFoundException(f"No documents found with '{key}'!")
+
+        return document
 
     def search_text(self, collection_name, search_string):
         """Searchs for string in text indexed field in collection
@@ -126,10 +130,16 @@ class MongoRepository():
                     '_id': False
                 }
             )
-            return list(cursor)
-
         except:
             raise CouldNotSearchDocumentsException("Could not searched documents!")
+
+        documents = list(cursor)
+        if not documents:
+            raise DocumentNotFoundException(f"No documents found with '{search_string}'!")
+
+        return documents
+
+
 
     def insert_one(self, collection_name, document):
         """Inserts one document in a collection

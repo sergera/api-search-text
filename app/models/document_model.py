@@ -10,7 +10,7 @@ class DocumentModel():
 
     Args:
         document (dict):
-            A dict containing the "id", "title" and "body" keys
+            A dict containing the "key", "title" and "body" keys
 
     Attributes:
         key (str):
@@ -21,9 +21,13 @@ class DocumentModel():
             Document body
     """
     def __init__(self, document):
-        self.key = document["key"]
-        self.title = document["title"]
-        self.body = document["body"]
+        try:
+            self.key = document["key"]
+            self.title = document["title"]
+            self.body = document["body"]
+        except:
+            raise ValidationException("Missing Parameters!")
+
         self.text = f"{self.title} {self.body}"
 
     def validate(self):
@@ -36,8 +40,8 @@ class DocumentModel():
             ValidationException
                 If any of the properties are not valid
         """
-        if not self.key or not ID_REGEX.match(self.key):
-            raise ValidationException("ID not valid!")
+        if not ID_REGEX.match(self.key):
+            raise ValidationException("Key not valid!")
 
         return True
 

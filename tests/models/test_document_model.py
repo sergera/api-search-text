@@ -11,12 +11,12 @@ class DocumentModelTestCase(unittest.TestCase):
     """
     def test_correct(self):
         correct = {"key": "a123", "title": "it's a title", "body": "it's a body"}
-        new_document =  DocumentModel(correct)
+        new_document = DocumentModel(correct)
         self.assertTrue(new_document.validate())
 
     def test_to_dict(self):
         correct = {"key": "a123", "title": "it's a title", "body": "it's a body"}
-        new_document =  DocumentModel(correct)
+        new_document = DocumentModel(correct)
         document_dict = new_document.to_dict()
         self.assertTrue(
             document_dict["key"] == correct["key"] and 
@@ -25,30 +25,45 @@ class DocumentModelTestCase(unittest.TestCase):
 
     def test_document_space_before(self):
         space_before_key = {"key": " a123", "title": "it's a title", "body": "it's a body"}
-        new_document =  DocumentModel(space_before_key)
+        new_document = DocumentModel(space_before_key)
         with self.assertRaises(ValidationException):
             new_document.validate()
 
     def test_document_space_after(self):
         space_after_key = {"key": "a123 ", "title": "it's a title", "body": "it's a body"}
-        new_document =  DocumentModel(space_after_key)
+        new_document = DocumentModel(space_after_key)
         with self.assertRaises(ValidationException):
             new_document.validate()
 
     def test_document_space_middle(self):
         space_after_key = {"key": "a1 23 ", "title": "it's a title", "body": "it's a body"}
-        new_document =  DocumentModel(space_after_key)
+        new_document = DocumentModel(space_after_key)
         with self.assertRaises(ValidationException):
             new_document.validate()
 
     def test_document_double_space(self):
         double_space = {"key": "a1  23", "title": "it's a title", "body": "it's a body"}
-        new_document =  DocumentModel(double_space)
+        new_document = DocumentModel(double_space)
         with self.assertRaises(ValidationException):
             new_document.validate()
 
     def test_document_dot(self):
         dot = {"key": "a1.23", "title": "it's a title", "body": "it's a body"}
-        new_document =  DocumentModel(dot)
+        new_document = DocumentModel(dot)
         with self.assertRaises(ValidationException):
             new_document.validate()
+
+    def test_missing_key(self):
+        missing_key = {"title": "it's a title", "body": "it's a body"}
+        with self.assertRaises(ValidationException):
+            new_document = DocumentModel(missing_key)
+
+    def test_missing_title(self):
+        missing_title = {"key": "a1.23", "body": "it's a body"}
+        with self.assertRaises(ValidationException):
+            new_document = DocumentModel(missing_title)
+
+    def test_missing_body(self):
+        missing_body = {"key": "a1.23", "title": "it's a title"}
+        with self.assertRaises(ValidationException):
+            new_document = DocumentModel(missing_body)

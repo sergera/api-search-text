@@ -12,3 +12,6 @@ class CouldNotInsertDocumentException(Exception):
 
 class ExistingDocumentException(Exception):
     pass
+
+class DocumentNotFoundException(Exception):
+	pass
