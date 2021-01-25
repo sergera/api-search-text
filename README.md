@@ -21,14 +21,14 @@ docker-compose
 
 #### Get text by key
 
-    Key is a URL param
+    Key is part of the URL
 
     key=1
     curl -X GET http://localhost:8080/text/$key
 
 #### Search texts
 
-    String to be searched is a URL param
+    String to be searched part of the URL
 
     Search will occur on title and body
 
