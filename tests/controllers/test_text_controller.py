@@ -13,7 +13,7 @@ from app import app
 
 class DocumentControllerTestCase(unittest.TestCase):
     """
-    Tests document controller with mocked repository
+    Tests text controller with mocked repository
     """
     def setUp(self):
         #create test client
@@ -23,14 +23,14 @@ class DocumentControllerTestCase(unittest.TestCase):
         #mock repository
         self.mocked_repository = MagicMock()
 
-    def test_post_document(self):
+    def test_post_text(self):
         mocked_response = {"message": "success!"}
-        document_to_insert = {"key": "a123", "title": "it's a title", "body": "it's a body"}
-        with patch("app.controllers.document_controller.repository", self.mocked_repository):
+        text_to_insert = {"key": "a123", "title": "it's a title", "body": "it's a body"}
+        with patch("app.controllers.text_controller.repository", self.mocked_repository):
             self.mocked_repository.insert_one.return_value = mocked_response
             response = self.test_app.post(
-                "/document",
-                data=json.dumps(document_to_insert, indent=4),
+                "/text",
+                data=json.dumps(text_to_insert, indent=4),
                 content_type="application/json"
             )
 
@@ -41,38 +41,38 @@ class DocumentControllerTestCase(unittest.TestCase):
             translated_json = json.loads(response.data)
             self.assertEqual(translated_json, mocked_response)     
 
-    def test_search_document(self):
+    def test_search_text(self):
         mocked_response = [{"key": "a123", "title": "it's a title", "body": "it's a body"}]
-        document_to_insert = {"key": "a123", "title": "it's a title", "body": "it's a body"}
-        with patch("app.controllers.document_controller.repository", self.mocked_repository):
+        text_to_insert = {"key": "a123", "title": "it's a title", "body": "it's a body"}
+        with patch("app.controllers.text_controller.repository", self.mocked_repository):
             self.mocked_repository.search_text.return_value = mocked_response
             response = self.test_app.get(
-                f"/documents/{document_to_insert['title']}",
-                data=json.dumps(document_to_insert, indent=4),
+                f"/texts/{text_to_insert['title']}",
+                data=json.dumps(text_to_insert, indent=4),
                 content_type="application/json"
             )
 
             statuscode = response.status_code
             self.assertEqual(response.content_type, "application/json")
             self.assertEqual(statuscode, 200)
-            self.assertTrue(b"documents" in response.data)
+            self.assertTrue(b"texts" in response.data)
             translated_json = json.loads(response.data)
-            self.assertEqual(translated_json, {"documents": mocked_response})            
+            self.assertEqual(translated_json, {"texts": mocked_response})            
             
     def test_get_by_id(self):
         mocked_response = {"key": "a123", "title": "it's a title", "body": "it's a body"}
-        document_key = {"key": "a123"}
-        with patch("app.controllers.document_controller.repository", self.mocked_repository):
+        text_key = {"key": "a123"}
+        with patch("app.controllers.text_controller.repository", self.mocked_repository):
             self.mocked_repository.get_doc.return_value = mocked_response
             response = self.test_app.get(
-                f"/document/{document_key}",
+                f"/text/{text_key}",
                 content_type="application/json"
             )
 
             statuscode = response.status_code
             self.assertEqual(response.content_type, "application/json")
             self.assertEqual(statuscode, 200)
-            self.assertTrue(b"document" in response.data)
+            self.assertTrue(b"text" in response.data)
             translated_json = json.loads(response.data)
-            self.assertEqual(translated_json, {"document": mocked_response})            
+            self.assertEqual(translated_json, {"text": mocked_response})            
             

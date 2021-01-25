@@ -4,34 +4,34 @@ from .exceptions import ValidationException
 
 ID_REGEX = re.compile("^[a-zA-Z0-9]+$")
 
-class DocumentModel():
-    """
-    A class used to represent a document model
+class TextModel():
+    def __init__(self, text):
+        """
+        A class used to represent a text document model
 
-    Args:
-        document (dict):
-            A dict containing the "key", "title" and "body" keys
+        Args:
+            text (dict):
+                A dict containing the "key", "title" and "body" keys
 
-    Attributes:
-        key (str):
-            Document's id (must be alphanumeric)
-        title (str):
-            Document title
-        body (str):
-            Document body
-    """
-    def __init__(self, document):
+        Attributes:
+            key (str):
+                Text's id (must be alphanumeric)
+            title (str):
+                Text title
+            body (str):
+                Text body
+        """
         try:
-            self.key = document["key"]
-            self.title = document["title"]
-            self.body = document["body"]
+            self.key = text["key"]
+            self.title = text["title"]
+            self.body = text["body"]
         except:
             raise ValidationException("Missing Parameters!")
 
         self.text = f"{self.title} {self.body}"
 
     def validate(self):
-        """Validates document properties
+        """Validates text properties
 
         Returns:
             bool: True if it is valid

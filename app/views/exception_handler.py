@@ -37,7 +37,3 @@ def handle_error_existing_document(ex):
 @app_error_handler.app_errorhandler(DocumentNotFoundException)
 def handle_error_document_not_found(ex):
 	return jsonify({"message": str(ex)}), 404
-
-@app_error_handler.app_errorhandler(Exception)
-def handle_error_generic(ex):
-	return jsonify({"message": str(ex)}), 500

@@ -17,25 +17,26 @@ class MongoRepository():
     """
     A class used to represent the MongoDB database
     It uses pymongo, and simplifies some of it's basic functionality
-
-    Args:
-        db_address (str):
-            MongoDB's address
-        db_name (str):
-            The name of the database in this particular instance of MongoDB
-        indexes (list[dict]):
-            A list fields to be indexed in a collection with an index type
-                    type:   type of index in uppercase (ex. TEXT, HASH, ...)
-                    field:  field to be indexed
-                    collection: collection where the field is
+    """
+    def __init__(self, db_address, db_name, indexes=None):
+        """
+        Args:
+            db_address (str):
+                MongoDB's address
+            db_name (str):
+                The name of the database in this particular instance of MongoDB
+            indexes (list[dict]):
+                A list fields to be indexed in a collection with an index type
+                        type:   type of index in uppercase (ex. TEXT, HASH, ...)
+                        field:  field to be indexed
+                        collection: collection where the field is
 
         Attributes:
             db_address (str):
                 MongoDB's address
             db_name (str):
                 the name of the database in this particular instance of MongoDB
-    """
-    def __init__(self, db_address, db_name, indexes=None):
+        """
         self.db_address = db_address
         self.db_name = db_name
         self._db = None
@@ -97,7 +98,7 @@ class MongoRepository():
             raise CouldNotGetDocumentException("Could not get document!")
         
         if not document:
-            raise DocumentNotFoundException(f"No documents found with '{key}'!")
+            raise DocumentNotFoundException(f"No documents found with {key}!")
 
         return document
 

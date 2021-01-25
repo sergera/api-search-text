@@ -8,12 +8,12 @@ indexes = [
     {
         "type": "HASHED",
         "field": "key",
-        "collection": "documents"
+        "collection": "texts"
     },
     {
         "type": "TEXT",
         "field": "text",
-        "collection": "documents"
+        "collection": "texts"
     }
 ]
 

@@ -66,12 +66,12 @@ class RepositoryTestCase(unittest.TestCase):
             {
                 "type": "HASHED",
                 "field": "id",
-                "collection": "documents"
+                "collection": "texts"
             },
             {
                 "type": "TEXT",
                 "field": "text",
-                "collection": "documents"
+                "collection": "texts"
             }
         ]
         self.mocked_collection.create_index.side_effect = Exception("oops")
@@ -81,15 +81,15 @@ class RepositoryTestCase(unittest.TestCase):
 
     def test_get_doc_success(self):
         key = {"key": "a123", "title": "it's a title", "body": "it's a body"}
-        returned_document = "i have returned"
+        returned_text = "i have returned"
 
-        self.mocked_collection.find_one.return_value = returned_document
+        self.mocked_collection.find_one.return_value = returned_text
 
-        gotten_document = self.mongo.get_doc(TEST_COLLECTION_NAME, key)
+        gotten_text = self.mongo.get_doc(TEST_COLLECTION_NAME, key)
 
         self.mocked_db.__getitem__.assert_called_once_with(TEST_COLLECTION_NAME)
         self.mocked_collection.find_one.assert_called_once_with(key, {"_id": False})
-        self.assertEqual(gotten_document, returned_document)
+        self.assertEqual(gotten_text, returned_text)
 
     def test_get_doc_failure(self):
         key = {"key": "a123", "title": "it's a title", "body": "it's a body"}
@@ -152,44 +152,44 @@ class RepositoryTestCase(unittest.TestCase):
         with self.assertRaises(DocumentNotFoundException):
             return_value = self.mongo.search_text(TEST_COLLECTION_NAME, search_string)
 
-    def test_insert_one_document_success(self):
-        document = {"key": "a123", "title": "it's a title", "body": "it's a body"}
+    def test_insert_one_text_success(self):
+        text = {"key": "a123", "title": "it's a title", "body": "it's a body"}
         returned_message = {"message": "Document Inserted!"}
 
-        response = self.mongo.insert_one(TEST_COLLECTION_NAME, document)
+        response = self.mongo.insert_one(TEST_COLLECTION_NAME, text)
 
         self.mocked_db.__getitem__.assert_called_once_with(TEST_COLLECTION_NAME)
-        self.mocked_collection.insert_one.assert_called_once_with(document)
+        self.mocked_collection.insert_one.assert_called_once_with(text)
         self.assertEqual(returned_message, response)
 
-    def test_insert_one_document_failure(self):
-        document = {"key": "a123", "title": "it's a title", "body": "it's a body"}
+    def test_insert_one_text_failure(self):
+        text = {"key": "a123", "title": "it's a title", "body": "it's a body"}
 
         self.mocked_collection.insert_one.side_effect = Exception("oops")
 
         with self.assertRaises(CouldNotInsertDocumentException):
-            self.mongo.insert_one(TEST_COLLECTION_NAME, document)
+            self.mongo.insert_one(TEST_COLLECTION_NAME, text)
 
     def test_insert_one_unique_fields(self):
-        document = {"key": "a123", "title": "it's a title", "body": "it's a body"}
+        text = {"key": "a123", "title": "it's a title", "body": "it's a body"}
         unique_fields = [{"key", "title"}]
         returned_message = {"message": "Document Inserted!"}
 
         self.mocked_collection.find_one.return_value = None
         self.mocked_collection.insert_one.return_value = returned_message
 
-        response = self.mongo.insert_one_unique_fields(TEST_COLLECTION_NAME, document, unique_fields)
+        response = self.mongo.insert_one_unique_fields(TEST_COLLECTION_NAME, text, unique_fields)
 
         self.mocked_db.__getitem__.assert_called_with(TEST_COLLECTION_NAME)
         self.assertEqual(self.mocked_db.__getitem__.call_count, 2)
-        self.mocked_collection.insert_one.assert_called_once_with(document)
+        self.mocked_collection.insert_one.assert_called_once_with(text)
         self.assertEqual(returned_message, response)
 
     def test_insert_one_unique_fields_failure(self):
-        document = {"key": "a123", "title": "it's a title", "body": "it's a body"}
+        text = {"key": "a123", "title": "it's a title", "body": "it's a body"}
         unique_fields = [{"key", "title"}]
 
-        self.mocked_collection.find_one.return_value = document
+        self.mocked_collection.find_one.return_value = text
         
         with self.assertRaises(ExistingDocumentException):
-            self.mongo.insert_one_unique_fields(TEST_COLLECTION_NAME, document, unique_fields)
+            self.mongo.insert_one_unique_fields(TEST_COLLECTION_NAME, text, unique_fields)

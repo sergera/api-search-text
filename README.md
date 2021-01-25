@@ -13,27 +13,27 @@ docker-compose
 
     make run
 
-#### Insert document
+#### Insert text
 
     curl -X POST -H "Content-Type: application/json" \
     -d '{"key": "1", "title": "my title", "body": "my body"}' \
-    http://localhost:8080/document
+    http://localhost:8080/text
 
-#### Get document by key
+#### Get text by key
 
     Key is a URL param
 
     key=1
-    curl -X GET http://localhost:8080/document/$key
+    curl -X GET http://localhost:8080/text/$key
 
-#### Search documents
+#### Search texts
 
     String to be searched is a URL param
 
     Search will occur on title and body
 
     search_string=my%20title
-    curl -X GET http://localhost:8080/documents/$search_string
+    curl -X GET http://localhost:8080/texts/$search_string
 
 #### Run in dev mode:
 
@@ -41,27 +41,27 @@ docker-compose
 
     Make sure MongoDB is running locally at 27017
 
-#### Insert document
+#### Insert text
 
     curl -X POST -H "Content-Type: application/json" \
     -d '{"key": "1", "title": "my title", "body": "my body"}' \
-    http://localhost:5000/document
+    http://localhost:5000/text
 
-#### Get document by key
+#### Get text by key
 
     Key is a URL param
 
     key=1
-    curl -X GET http://localhost:5000/document/$key
+    curl -X GET http://localhost:5000/text/$key
 
-#### Search documents
+#### Search texts
 
     String to be searched is a URL param
 
     Search will occur on title and body
 
     search_string=my%20title
-    curl -X GET http://localhost:5000/documents/$search_string
+    curl -X GET http://localhost:5000/texts/$search_string
 
 #### For other commands
 
