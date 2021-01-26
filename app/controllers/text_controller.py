@@ -19,11 +19,12 @@ def insert():
     repository.insert_one_unique_fields(COLLECTION_NAME, text.to_dict(), unique_fields)
     return {"message": "success!"}
 
-@app_text.route('/texts/<string:search_string>', methods=["GET"])
-def search(search_string):
+@app_text.route('/search', methods=["GET"])
+def search():
     """
     Searches for texts that match string ordered by ocurrences
     """
+    search_string = request.args.get("q")
     result = repository.search_text(COLLECTION_NAME, search_string)
     return {"texts": result}
 
@@ -42,4 +43,4 @@ def root():
     return {"message": """Welcome to the search text API!\n
                         Use post('/text') to insert a text,\n 
                         get('/text') to get a text by key,\n 
-                        and get('texts') to search texts!"""}
+                        and get('search') to search texts!"""}

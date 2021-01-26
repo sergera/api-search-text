@@ -21,19 +21,14 @@ docker-compose
 
 #### Get text by key
 
-    Key is part of the URL
-
     key=1
     curl -X GET http://localhost:8080/text/$key
 
-#### Search texts
+#### Search title and body
 
-    String to be searched part of the URL
-
-    Search will occur on title and body
-
-    search_string=my%20title
-    curl -X GET http://localhost:8080/texts/$search_string
+    curl -X GET http://localhost:8080/search?q=my%20title
+        OR
+    curl -X GET -G --data-urlencode "q=my title" http://localhost:8080/search
 
 #### Run in dev mode:
 
@@ -49,19 +44,14 @@ docker-compose
 
 #### Get text by key
 
-    Key is a URL param
-
     key=1
     curl -X GET http://localhost:5000/text/$key
 
-#### Search texts
+#### Search title and body
 
-    String to be searched is a URL param
-
-    Search will occur on title and body
-
-    search_string=my%20title
-    curl -X GET http://localhost:5000/texts/$search_string
+    curl -X GET http://localhost:5000/search?q=my%20title
+        OR
+    curl -X GET -G --data-urlencode "q=my title" http://localhost:5000/search
 
 #### For other commands
 
