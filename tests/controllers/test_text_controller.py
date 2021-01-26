@@ -11,6 +11,8 @@ from app.repository import repository
 from app.repository.mongo_repository import MongoRepository
 from app import app
 
+from app.controllers.exceptions import MissingParameterException
+
 class DocumentControllerTestCase(unittest.TestCase):
     """
     Tests text controller with mocked repository
@@ -48,7 +50,6 @@ class DocumentControllerTestCase(unittest.TestCase):
             self.mocked_repository.search_text.return_value = mocked_response
             response = self.test_app.get(
                 f"/search?q={text_to_insert['title']}",
-                data=json.dumps(text_to_insert, indent=4),
                 content_type="application/json"
             )
 
@@ -58,7 +59,17 @@ class DocumentControllerTestCase(unittest.TestCase):
             self.assertTrue(b"texts" in response.data)
             translated_json = json.loads(response.data)
             self.assertEqual(translated_json, {"texts": mocked_response})            
-            
+
+    def test_search_text_missing_query_string(self):
+        text_to_insert = {"key": "a123", "title": "it's a title", "body": "it's a body"}
+        response = self.test_app.get(
+            f"/search?v={text_to_insert['title']}",
+            content_type="application/json"
+        )
+
+        statuscode = response.status_code
+        self.assertEqual(statuscode, 400)
+
     def test_get_by_id(self):
         mocked_response = {"key": "a123", "title": "it's a title", "body": "it's a body"}
         text_key = {"key": "a123"}

@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify
 
+from app.controllers.exceptions import MissingParameterException
 from app.models.exceptions import ValidationException
 from app.repository.exceptions import (CouldNotCreateIndexException,
 									   CouldNotGetDocumentException,
@@ -9,6 +10,10 @@ from app.repository.exceptions import (CouldNotCreateIndexException,
 									   DocumentNotFoundException,)
 
 app_error_handler = Blueprint("app_error_handler", __name__)
+
+@app_error_handler.app_errorhandler(MissingParameterException)
+def handle_error_request_parameter(ex):
+	return jsonify({"message": str(ex)}), 400
 
 @app_error_handler.app_errorhandler(ValidationException)
 def handle_error_validation(ex):

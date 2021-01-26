@@ -1,7 +1,11 @@
-from flask import Blueprint, request
 import json
+
+from flask import Blueprint, request
+
 from app.models.text_model import TextModel
 from app.repository import repository
+
+from .exceptions import MissingParameterException
 
 app_text = Blueprint('app_text', __name__)
 
@@ -25,6 +29,10 @@ def search():
     Searches for texts that match string ordered by ocurrences
     """
     search_string = request.args.get("q")
+
+    if not search_string:
+        raise MissingParameterException("Search must have 'q' parameter for query!")
+
     result = repository.search_text(COLLECTION_NAME, search_string)
     return {"texts": result}
 
