@@ -47,7 +47,7 @@ class DocumentControllerTestCase(unittest.TestCase):
         with patch("app.controllers.text_controller.repository", self.mocked_repository):
             self.mocked_repository.search_text.return_value = mocked_response
             response = self.test_app.get(
-                f"/texts/{text_to_insert['title']}",
+                f"/search?q={text_to_insert['title']}",
                 data=json.dumps(text_to_insert, indent=4),
                 content_type="application/json"
             )
