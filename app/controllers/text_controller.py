@@ -3,9 +3,9 @@ import json
 from flask import Blueprint, request
 
 from app.models.text_model import TextModel
+from app.models.key_model import KeyModel
+from app.models.query_model import QueryModel
 from app.repository import repository
-
-from .exceptions import MissingParameterException
 
 app_text = Blueprint('app_text', __name__)
 
@@ -21,19 +21,16 @@ def insert():
     text.validate()
     unique_fields = [{"key"}]
     repository.insert_one_unique_fields(COLLECTION_NAME, text.to_dict(), unique_fields)
-    return {"message": "success!"}
+    return {"message": "success!"}, 201
 
 @app_text.route('/search', methods=["GET"])
 def search():
     """
     Searches for texts that match string ordered by ocurrences
     """
-    search_string = request.args.get("q")
-
-    if not search_string:
-        raise MissingParameterException("Search must have 'q' parameter for query!")
-
-    result = repository.search_text(COLLECTION_NAME, search_string)
+    args = request.args.to_dict()
+    query = QueryModel(args)
+    result = repository.search_text(COLLECTION_NAME, query.value)
     return {"texts": result}
 
 @app_text.route('/text/<string:key>', methods=["GET"])
@@ -41,7 +38,9 @@ def get_by_id(key):
     """
     Gets a text by it's key
     """
-    return {"text": repository.get_doc(COLLECTION_NAME, {"key": key} )}
+    key = KeyModel(key)
+    key.validate()
+    return {"text": repository.get_doc(COLLECTION_NAME, key.to_dict())}
     
 @app_text.route('/', methods=['GET'])
 def root():

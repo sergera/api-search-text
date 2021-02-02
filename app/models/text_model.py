@@ -1,14 +1,14 @@
-import re
+from .exceptions import (ValidationException,
+                        MissingParameterException,)
 
-from .exceptions import ValidationException
-
-ID_REGEX = re.compile("^[a-zA-Z0-9]+$")
+from .key_model import KeyModel
 
 class TextModel():
+    """
+    A class used to represent a text document model
+    """
     def __init__(self, text):
         """
-        A class used to represent a text document model
-
         Args:
             text (dict):
                 A dict containing the "key", "title" and "body" keys
@@ -20,30 +20,25 @@ class TextModel():
                 Text title
             body (str):
                 Text body
+
+        Raises:
+            MissingParameterException
+                If text doesn't have the "key", "title", or "body" keys
         """
         try:
-            self.key = text["key"]
+            self.key = KeyModel(text["key"])
             self.title = text["title"]
             self.body = text["body"]
         except:
-            raise ValidationException("Missing Parameters!")
+            raise MissingParameterException("Text must have 'key','title', and 'body'!")
 
         self.text = f"{self.title} {self.body}"
 
     def validate(self):
-        """Validates text properties
-
-        Returns:
-            bool: True if it is valid
-
-        Raises:
-            ValidationException
-                If any of the properties are not valid
         """
-        if not ID_REGEX.match(self.key):
-            raise ValidationException("Key not valid!")
-
-        return True
+        Validates key
+        """
+        self.key.validate()
 
     def to_dict(self):
         """Makes a dict out of this object
@@ -51,4 +46,4 @@ class TextModel():
         Returns:
             dict: with each key as a property from this object
         """
-        return {"key": self.key, "title": self.title, "body": self.body, "text": self.text}
+        return {"key": self.key.value, "title": self.title, "body": self.body, "text": self.text}

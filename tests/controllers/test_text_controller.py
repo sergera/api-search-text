@@ -11,9 +11,7 @@ from app.repository import repository
 from app.repository.mongo_repository import MongoRepository
 from app import app
 
-from app.controllers.exceptions import MissingParameterException
-
-class DocumentControllerTestCase(unittest.TestCase):
+class TextControllerTestCase(unittest.TestCase):
     """
     Tests text controller with mocked repository
     """
@@ -38,7 +36,7 @@ class DocumentControllerTestCase(unittest.TestCase):
 
             statuscode = response.status_code
             self.assertEqual(response.content_type, "application/json")
-            self.assertEqual(statuscode, 200)
+            self.assertEqual(statuscode, 201)
             self.assertTrue(b"message" in response.data)
             translated_json = json.loads(response.data)
             self.assertEqual(translated_json, mocked_response)     
@@ -72,7 +70,7 @@ class DocumentControllerTestCase(unittest.TestCase):
 
     def test_get_by_id(self):
         mocked_response = {"key": "a123", "title": "it's a title", "body": "it's a body"}
-        text_key = {"key": "a123"}
+        text_key = "a123"
         with patch("app.controllers.text_controller.repository", self.mocked_repository):
             self.mocked_repository.get_doc.return_value = mocked_response
             response = self.test_app.get(

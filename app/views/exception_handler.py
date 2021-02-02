@@ -1,7 +1,8 @@
 from flask import Blueprint, jsonify
 
-from app.controllers.exceptions import MissingParameterException
-from app.models.exceptions import ValidationException
+from app.models.exceptions import (ValidationException,
+								   MissingParameterException,)
+
 from app.repository.exceptions import (CouldNotCreateIndexException,
 									   CouldNotGetDocumentException,
 									   CouldNotSearchDocumentsException,
